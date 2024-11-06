@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// MongoDB connection. edit the string or find a better way
+// MongoDB connection. EEedit the string or find a better way
 mongoose.connect('mongodb+srv://AzaniaVC:<db_password>@cluster0.sokkbtw.mongodb.net/', { useNewUrlParser: true, useUnifiedTopology: true });
 // User model
 const userSchema = new mongoose.Schema({
