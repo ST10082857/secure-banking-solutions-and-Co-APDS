@@ -1,0 +1,11 @@
+{
+  "name": "demo-repo",
+  "version": "0.2.0",
+  "description": "A sample package.json",
+  "dependencies": {
+    "@angular/forms": "^18.2.7",
+    "@angular/router": "^18.2.7",
+    "@primer/css": "17.0.1"
+  },
+  "license": "MIT"
+}
