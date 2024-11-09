@@ -29,3 +29,28 @@ workflows:
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - say-hello
+      ------------------APDS POE Configure(basc ones based on the CircleCi yml that it created. 
+      version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.8  # Example Docker image (you can change this to suit your project)
+    steps:
+      - checkout  # Check out the code from the Git repository
+      - run:
+          name: Install dependencies
+          command: |
+            python -m venv venv  # Create virtual environment
+            . venv/bin/activate   # Activate virtual environment
+            pip install -r requirements.txt  # Install dependencies from requirements.txt
+      - run:
+          name: Run tests
+          command: |
+            pytest  # Run tests using pytest (adjust based on your project)
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
