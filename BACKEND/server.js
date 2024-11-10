@@ -9,11 +9,10 @@ const fs = require('fs');
 const https = require('https');
 const http = require('http'); // Import http for redirecting
 const User = require('./models/user'); // Ensure this path is correct
-const dotenv = require('dotenv');  // Load dotenv
+//const path = require('path');
 
-/*
-mushfeeq + adrian responsiblity: 
-*/
+
+
 
 dotenv.config();  // Initialize dotenv
 const app = express();
@@ -26,6 +25,11 @@ app.use(bodyParser.json());
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected successfully'))
   .catch(err => console.log('MongoDB connection error: ', err));
+//----------------------------------------------------------------------------------------------------
+// Redirect HTTP to HTTPS
+//Obtaining+generating a ssl certificate. It allowed this process of enforcing
+//ssl and making sure all HTTP is redirected to HTTPS
+//responsibility:Azania Z Ncube
 
 // Serve a simple response for HTTPS
 app.get('/', (req, res) => {
@@ -33,24 +37,39 @@ app.get('/', (req, res) => {
 });
 
 // SSL options
-const sslOptions = {
-  key: fs.readFileSync('server.key'),
-  cert: fs.readFileSync('server.cert')
-};
+// const sslOptions = {
+//   key: fs.readFileSync('private.key'),
+//   cert: fs.readFileSync('request.csr')
+// };
+// const sslOptions = {
+//   key: fs.readFileSync(path.resolve(__dirname, "C:\Users\Aria\projects\secure-banking-solutions-and-Co-APDS\BACKEND\private.key")),
+//   cert: fs.readFileSync(path.resolve(__dirname, "C:\Users\Aria\projects\secure-banking-solutions-and-Co-APDS\BACKEND\request.csr")),
+// };
+//pk path= C:\Users\Aria\projects\secure-banking-solutions-and-Co-APDS\BACKEND\private.key
+//cert path= C:\Users\Aria\projects\secure-banking-solutions-and-Co-APDS\BACKEND\request.csr
 
+// const sslOptions = {
+//   key: fs.readFileSync('server.key'),
+//   cert: fs.readFileSync('server.cert')
+// };
+// Read your certificates and keys
+const privateKey = fs.readFileSync('./certs/privatekey.pem', 'utf8');
+const certificate = fs.readFileSync('./certs/certificate.pem', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
 // Create HTTPS server
-https.createServer(sslOptions, app).listen(443, () => {
+https.createServer(credentials, app).listen(443, () => {
   console.log('HTTPS server is running on https://localhost');
 });
 
-// Redirect HTTP to HTTPS
+
+
 http.createServer((req, res) => {
   res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
   res.end();
 }).listen(80, () => {
   console.log('HTTP server is running and redirecting to HTTPS');
 });
-
+//------------------------------------------------------------------------------------------
 // Register route
 app.post('/api/register', async (req, res) => {
   const { fullName, passportId, accNo, password, confirmPassword } = req.body;
